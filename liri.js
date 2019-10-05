@@ -22,6 +22,17 @@ else if (queryType === "spotify-this-song") {
     if(!queryString) {
         queryString = "The Sign";
     }
+        spotify.search({type: "track", query: queryString}, (err, data) => {
+            if(err) {
+                console.log(err);
+            }
+            else {
+                const searchItem = data.tracks.items[0];
+                output += "Artist: " + searchItem.artists[0].name +"\n\n";
+                output += "Track: " + searchItem.name + "\n\n";
+                output += "Preview link: " + searchItem.preview_url + "\n\n";
+                output += "Album: " + searchItem.album.name;
+                console.log(output);
 }
 else if (queryType === "movie-this") {
     if(!queryString) {
