@@ -1,0 +1,22 @@
+{
+  "name": "liri",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kellyxj/liri.git"
+  },
+  "author": "Kelly Jiang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kellyxj/liri/issues"
+  },
+  "homepage": "https://github.com/kellyxj/liri#readme",
+  "dependencies": {
+    "node-spotify-api": "^1.1.1"
+  }
+}
