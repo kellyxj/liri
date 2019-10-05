@@ -12,16 +12,30 @@ let queryString = rest? rest.join(" ") : "";
 
 let queryUrl = "";
 let output = "";
-if (queryType === "do-what-it-says") {
-    
-}
-else if(queryType === "concert-this") {
-    queryUrl = `https://api.seatgeek.com/2/events?q=${queryString}&client_id=MTg3NTQwNzh8MTU3MDI0MTk0Ni44NQ`;
-}
-else if (queryType === "spotify-this-song") {
-    if(!queryString) {
-        queryString = "The Sign";
+userInput();
+//This function is used only because fs.readFile is asynchronous. This function is recursively called on user entering
+//do-what-it-says in order to reassign queryType and queryString to the appropriate values from random.txt.
+function userInput () {
+    if (queryType === "do-what-it-says") {
+        fs.readFile("random.txt", "utf8", (err,data) => {
+            if(err) {
+                console.log(err);
+            }
+            else {
+                const randomIndex = Math.floor(Math.random()*data.split("\n").length);
+                queryType = data.split("\n")[randomIndex].split(",")[0];
+                queryString = data.split("\n")[randomIndex].split(",")[1];
+                userInput();
+            }
+        })
     }
+    if(queryType === "concert-this") {
+        queryUrl = `https://api.seatgeek.com/2/events?q=${queryString}&client_id=MTg3NTQwNzh8MTU3MDI0MTk0Ni44NQ`;
+    }
+    if (queryType === "spotify-this-song") {
+        if(!queryString) {
+            queryString = "The Sign";
+        }
         spotify.search({type: "track", query: queryString}, (err, data) => {
             if(err) {
                 console.log(err);
@@ -33,13 +47,15 @@ else if (queryType === "spotify-this-song") {
                 output += "Preview link: " + searchItem.preview_url + "\n\n";
                 output += "Album: " + searchItem.album.name;
                 console.log(output);
-}
-    if (queryType === "movie-this") {
-    if(!queryString) {
-        queryString = "Mr. Nobody";
+            }
+        })
     }
-    queryUrl = `http://www.omdbapi.com/?apikey=daa104ee&t=${queryString}`;
-}
+    if (queryType === "movie-this") {
+        if(!queryString) {
+            queryString = "Mr. Nobody";
+        }
+        queryUrl = `http://www.omdbapi.com/?apikey=daa104ee&t=${queryString}`;
+    }
     //This block of code will be run only if the concert-this or movie-this commands will run. Otherwise, queryUrl is the empty string.
     if(queryUrl) {
         axios.get(queryUrl).then(response => {
@@ -50,7 +66,7 @@ else if (queryType === "spotify-this-song") {
                     output += "Date: " + moment(searchItem.datetime_utc).format("MM/DD/YYYY") + "\n-----------------------\n";
                 }
             }
-else {
+            else {
                 const searchItem = response.data;
                 output += "Title: " + searchItem.Title + "\n\n";
                 output += "Year of Release: " + searchItem.Year + "\n\n";
@@ -60,9 +76,10 @@ else {
                 output += "Language: " + searchItem.Language + "\n\n";
                 output += "Plot summary: " + searchItem.Plot +"\n\n";
                 output += "Cast: " + searchItem.Actors;
-}
+            }
             console.log(output);
-    }).catch(error => {
-        console.log(error);
-    })
+        }).catch(error => {
+            console.log(error);
+        })
+    }
 }
