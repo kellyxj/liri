@@ -34,12 +34,13 @@ else if (queryType === "spotify-this-song") {
                 output += "Album: " + searchItem.album.name;
                 console.log(output);
 }
-else if (queryType === "movie-this") {
+    if (queryType === "movie-this") {
     if(!queryString) {
         queryString = "Mr. Nobody";
     }
     queryUrl = `http://www.omdbapi.com/?apikey=daa104ee&t=${queryString}`;
 }
+    //This block of code will be run only if the concert-this or movie-this commands will run. Otherwise, queryUrl is the empty string.
     if(queryUrl) {
         axios.get(queryUrl).then(response => {
             if(queryType === "concert-this") {
@@ -50,7 +51,15 @@ else if (queryType === "movie-this") {
                 }
             }
 else {
-    console.log("Unsupported search type");
+                const searchItem = response.data;
+                output += "Title: " + searchItem.Title + "\n\n";
+                output += "Year of Release: " + searchItem.Year + "\n\n";
+                output += "IMDB Rating: " + searchItem.imdbRating + "\n\n";
+                output += "Rottentomatoes Rating: " + searchItem.Ratings[1].Value + "\n\n"; //I think this line will have the wrong output if there is no imdb rating
+                output += "Country: " + searchItem.Country + "\n\n";
+                output += "Language: " + searchItem.Language + "\n\n";
+                output += "Plot summary: " + searchItem.Plot +"\n\n";
+                output += "Cast: " + searchItem.Actors;
 }
             console.log(output);
     }).catch(error => {
