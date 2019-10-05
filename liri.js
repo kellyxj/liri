@@ -40,12 +40,19 @@ else if (queryType === "movie-this") {
     }
     queryUrl = `http://www.omdbapi.com/?apikey=daa104ee&t=${queryString}`;
 }
+    if(queryUrl) {
+        axios.get(queryUrl).then(response => {
+            if(queryType === "concert-this") {
+                for(const searchItem of response.data.events) {
+                    output += "Venue: " + searchItem.venue.name +"\n\n";
+                    output += "Venue location: " + searchItem.venue.display_location + "\n\n";
+                    output += "Date: " + moment(searchItem.datetime_utc).format("MM/DD/YYYY") + "\n-----------------------\n";
+                }
+            }
 else {
     console.log("Unsupported search type");
 }
-
-if(queryUrl) {
-    axios.get(queryUrl).then(response => {
+            console.log(output);
     }).catch(error => {
         console.log(error);
     })
